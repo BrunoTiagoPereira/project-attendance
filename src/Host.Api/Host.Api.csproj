@@ -19,8 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\" />
-    <Folder Include="Controllers\" />
+    <Folder Include="Application\Users\Queries\Requests\" />
     <Folder Include="Infra\" />
     <Folder Include="CrossCutting\" />
   </ItemGroup>
