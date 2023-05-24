@@ -1,10 +1,11 @@
-﻿using Host.Api.Core.Exceptions;
+﻿using Host.Api.Core.DomainObjects;
+using Host.Api.Core.Exceptions;
 using Host.Api.Core.ValueObjects;
 using Host.Api.Domain.Projects.Entities;
 
 namespace Host.Api.Domain.Users.Entities
 {
-    public class User
+    public class User : AggregateRoot
     {
         public string Username { get; private set; }
         public string Login { get; private set; }
@@ -23,7 +24,7 @@ namespace Host.Api.Domain.Users.Entities
             _workTimes = new List<WorkTime>();
         }
 
-        public User(string username, string login, string email, string password)
+        public User(string username, string login, string email, string password) : base()
         {
             UpdateUsername(username);
             UpdateLogin(login);

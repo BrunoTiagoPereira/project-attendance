@@ -1,17 +1,20 @@
-﻿using Host.Api.Core.Exceptions;
+﻿using Host.Api.Core.DomainObjects;
+using Host.Api.Core.Exceptions;
 using Host.Api.Domain.Users.Entities;
 
 namespace Host.Api.Domain.Projects.Entities
 {
-    public class WorkTime
+    public class WorkTime : Entity
     {
-        public WorkTime(User user, Project project, DateTime startedAt, DateTime finishedAt)
+        public WorkTime(User user, Project project, DateTime startedAt, DateTime endedAt) : base()
         {
-            User = user ?? throw new ArgumentNullException(nameof(user));
-            Project = project ?? throw new ArgumentNullException(nameof(project));
-            StartedAt = startedAt;
-            EndedAt = finishedAt;
+            UpdateUser(user);
+            UpdateProject(project);
+            UpdateStartedAt(startedAt);
+            UpdateEndedAt(endedAt);
         }
+
+        protected WorkTime() { }
 
         public long UserId { get; private set; }
         public User User { get; private set; }

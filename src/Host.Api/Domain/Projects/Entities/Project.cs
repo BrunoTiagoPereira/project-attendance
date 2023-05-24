@@ -1,9 +1,11 @@
-﻿using Host.Api.Core.Exceptions;
+﻿using Host.Api.Core.DomainObjects;
+using Host.Api.Core.Exceptions;
+using Host.Api.Domain.Users.Contracts;
 using Host.Api.Domain.Users.Entities;
 
 namespace Host.Api.Domain.Projects.Entities
 {
-    public class Project
+    public class Project : AggregateRoot, IHasUsersRelated
     {
         public string Title { get; private set; }
 
@@ -16,13 +18,13 @@ namespace Host.Api.Domain.Projects.Entities
 
         public IReadOnlyCollection<WorkTime> WorkTimes => _workTimes.AsReadOnly();
 
-        protected Project()
+        protected Project() : base()
         {
             _users = new List<User>();
             _workTimes = new List<WorkTime>();
         }
 
-        public Project(string title, string description, IEnumerable<User> users)
+        public Project(string title, string description, IEnumerable<User> users) : base()
         {
             UpdateTitle(title);
             UpdateDescription(description);
