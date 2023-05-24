@@ -1,6 +1,6 @@
 ﻿using Host.Api.Application.Users.Commands.Requests;
 using Host.Api.Application.Users.Commands.Responses;
-using Host.Api.Application.Users.Services.Services;
+using Host.Api.Application.Users.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +24,14 @@ namespace Host.Api.Controllers
         public Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest request)
         {
             return _userManager.Authenticate(request);
+        }
+
+        [HttpPost]
+        [Route("users")]
+        [AllowAnonymous]
+        public Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
+        {
+            return _userManager.CreateUser(request);
         }
     }
 }

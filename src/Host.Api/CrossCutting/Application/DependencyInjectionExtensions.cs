@@ -1,4 +1,4 @@
-﻿using Host.Api.Application.Users.Services.Services;
+﻿using Host.Api.Application.Users.Services;
 using Host.Api.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

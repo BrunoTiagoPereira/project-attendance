@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Host.Api.Application.Users.Commands.Requests;
 using Host.Api.Core.Transaction;
+using Host.Api.Core.Validators;
 using Host.Api.Domain.Projects.Repositories;
 using Host.Api.Domain.Users.Managers;
 using Host.Api.Domain.Users.Repositories;
@@ -12,6 +13,12 @@ namespace Host.Api.CrossCutting.Core
 {
     public static class DependencyInjectionExtensions
     {
+        public static IServiceCollection AddCoreServices(this IServiceCollection services)
+        {
+            services.AddScoped<IValidatorManager, ValidatorManager>();
+
+            return services;
+        }
         public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -48,6 +55,7 @@ namespace Host.Api.CrossCutting.Core
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services
+                .AddCoreServices()
                 .AddDomainServices()
                 .AddDataServices(configuration)
                 .AddValidators()

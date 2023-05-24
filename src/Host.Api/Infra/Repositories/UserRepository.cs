@@ -22,5 +22,10 @@ namespace Host.Api.Infra.Repositories
                 .SingleOrDefaultAsync(x => x.Login == login)
                 ;
         }
+
+        public Task<bool> EmailIsTakenAsync(string email)
+        {
+            return Set.AnyAsync(x => x.Email.Value == email);
+        }
     }
 }

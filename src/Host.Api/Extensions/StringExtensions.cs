@@ -9,12 +9,15 @@ namespace Host.Api.Extensions
             var sb = new StringBuilder();
 
             sb.Append("Erros: ");
-            foreach (var error in errors)
-            {
-                sb.Append($"'{error}' ");
-            }
+
+            sb.Append(string.Join(", ", errors));
 
             return sb.ToString();
+        }
+
+        public static bool IsNotNullOrWhiteSpace(this string str)
+        {
+            return !string.IsNullOrWhiteSpace(str);
         }
     }
 }

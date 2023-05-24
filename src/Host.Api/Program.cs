@@ -30,8 +30,8 @@ app.UseAuthorization();
 
 app.UseApiServices();
 
-app.Services.GetRequiredService<DatabaseContext>().Database.EnsureCreated();
-
 app.MapControllers();
+
+app.Services.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>().Database.EnsureCreated();
 
 app.Run();
