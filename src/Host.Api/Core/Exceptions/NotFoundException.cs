@@ -1,4 +1,4 @@
-﻿namespace AppNary.Core.Exceptions
+﻿namespace Host.Api.Core.Exceptions
 {
     public class NotFoundException : Exception
     {
