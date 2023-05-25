@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c15f09d3-d269-4ba0-9441-521362fc714c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Projects\" />
+    <Folder Include="Application\Users\Queries\Requests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectAttendance.Core\ProjectAttendance.Core.csproj" />
+    <ProjectReference Include="..\ProjectAttendance.CrossCutting\ProjectAttendance.CrossCutting.csproj" />
+    <ProjectReference Include="..\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj" />
+    <ProjectReference Include="..\ProjectAttendance.Infra\ProjectAttendance.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

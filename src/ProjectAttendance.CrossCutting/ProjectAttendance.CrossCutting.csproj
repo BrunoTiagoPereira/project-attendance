@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectAttendance.Core\ProjectAttendance.Core.csproj" />
+    <ProjectReference Include="..\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj" />
+    <ProjectReference Include="..\ProjectAttendance.Infra\ProjectAttendance.Infra.csproj" />
+  </ItemGroup>
+
+</Project>
