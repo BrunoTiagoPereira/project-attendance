@@ -5,15 +5,21 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{04D8CDD2-7F87-4242-90BA-1C10CF617E48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.Host", "src\ProjectAttendance.Host\ProjectAttendance.Host.csproj", "{1C7C5A60-546F-4F7E-9757-A3402DEE4E62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectAttendance.Host", "src\ProjectAttendance.Host\ProjectAttendance.Host.csproj", "{1C7C5A60-546F-4F7E-9757-A3402DEE4E62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.Domain", "src\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj", "{A24F39DB-9717-4AF6-A177-2398DA8A0BDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectAttendance.Domain", "src\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj", "{A24F39DB-9717-4AF6-A177-2398DA8A0BDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.CrossCutting", "src\ProjectAttendance.CrossCutting\ProjectAttendance.CrossCutting.csproj", "{ABB50F80-4B20-4614-AD85-A0F31BBDE6E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectAttendance.CrossCutting", "src\ProjectAttendance.CrossCutting\ProjectAttendance.CrossCutting.csproj", "{ABB50F80-4B20-4614-AD85-A0F31BBDE6E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.Infra", "src\ProjectAttendance.Infra\ProjectAttendance.Infra.csproj", "{47BE9380-ACF2-4074-8161-3F58EB490C21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectAttendance.Infra", "src\ProjectAttendance.Infra\ProjectAttendance.Infra.csproj", "{47BE9380-ACF2-4074-8161-3F58EB490C21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.Core", "src\ProjectAttendance.Core\ProjectAttendance.Core.csproj", "{46DC23B6-304A-49F7-9739-32AD008B781A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectAttendance.Core", "src\ProjectAttendance.Core\ProjectAttendance.Core.csproj", "{46DC23B6-304A-49F7-9739-32AD008B781A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C6414753-0EBA-4DBC-A9CF-379E51D67889}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.Host.Tests", "tests\ProjectAttendance.Host.Tests\ProjectAttendance.Host.Tests.csproj", "{E679E360-AFC7-48D4-A0A2-1DD14B1C669A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAttendance.UnitTests.Core", "tests\ProjectAttendance.UnitTests.Core\ProjectAttendance.UnitTests.Core.csproj", "{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +47,14 @@ Global
 		{46DC23B6-304A-49F7-9739-32AD008B781A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46DC23B6-304A-49F7-9739-32AD008B781A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46DC23B6-304A-49F7-9739-32AD008B781A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E679E360-AFC7-48D4-A0A2-1DD14B1C669A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E679E360-AFC7-48D4-A0A2-1DD14B1C669A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E679E360-AFC7-48D4-A0A2-1DD14B1C669A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E679E360-AFC7-48D4-A0A2-1DD14B1C669A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +65,8 @@ Global
 		{ABB50F80-4B20-4614-AD85-A0F31BBDE6E0} = {04D8CDD2-7F87-4242-90BA-1C10CF617E48}
 		{47BE9380-ACF2-4074-8161-3F58EB490C21} = {04D8CDD2-7F87-4242-90BA-1C10CF617E48}
 		{46DC23B6-304A-49F7-9739-32AD008B781A} = {04D8CDD2-7F87-4242-90BA-1C10CF617E48}
+		{E679E360-AFC7-48D4-A0A2-1DD14B1C669A} = {C6414753-0EBA-4DBC-A9CF-379E51D67889}
+		{FAC5379E-23E2-42DE-AA2E-8A6C421DEC7F} = {C6414753-0EBA-4DBC-A9CF-379E51D67889}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B766F47-5175-4F81-8C77-EDD49C357D35}

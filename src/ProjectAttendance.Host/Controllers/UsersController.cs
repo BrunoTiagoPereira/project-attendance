@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
 using ProjectAttendance.Host.Application.Users.Commands.Responses;
+using ProjectAttendance.Host.Application.Users.Queries.Requests;
+using ProjectAttendance.Host.Application.Users.Queries.Responses;
 using ProjectAttendance.Host.Application.Users.Services;
 
 namespace ProjectAttendance.Host.Controllers
@@ -28,7 +30,6 @@ namespace ProjectAttendance.Host.Controllers
 
         [HttpPost]
         [Route("users")]
-        [AllowAnonymous]
         public Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
         {
             return _userManager.CreateUser(request);

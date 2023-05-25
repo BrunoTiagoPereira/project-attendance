@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ProjectAttendance.Host.Application.Users.Commands.Responses
+namespace ProjectAttendance.Host.Application.Users.Queries.Responses
 {
     public class AuthenticateCommandResponse
     {
@@ -14,7 +14,7 @@ namespace ProjectAttendance.Host.Application.Users.Commands.Responses
     public class AuthenticationUserResponse
     {
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Username { get; set; }
 
         [JsonPropertyName("email")]
         public string Email { get; set; }

@@ -15,6 +15,8 @@ namespace ProjectAttendance.Host.Application.Users.Commands.Validators
 
         private CreateUserCommandRequestValidator()
         {
+            RuleFor(x => x).NotNull().WithMessage("Requisição inválida.");
+
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email inválido");
 
             RuleFor(x => x.Username).NotEmpty().WithMessage("Nome de usuário inválido");

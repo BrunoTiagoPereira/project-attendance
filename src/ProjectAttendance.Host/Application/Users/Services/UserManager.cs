@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
 using ProjectAttendance.Domain.Users.Entities;
 using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
 using ProjectAttendance.Host.Application.Users.Commands.Responses;
+using ProjectAttendance.Host.Application.Users.Queries.Requests;
 using ProjectAttendance.Host.Application.Users.Queries.Responses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -25,12 +25,29 @@ namespace ProjectAttendance.Host.Application.Users.Services
             _validatorManager = validatorManager ?? throw new ArgumentNullException(nameof(validatorManager));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _uow = uow ?? throw new ArgumentNullException(nameof(uow));
+            if (configuration is null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
             _secret = configuration.GetSection("JwtToken:Secret").Value;
         }
 
-        public Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest auth)
+        public async Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest request)
         {
-            throw new NotImplementedException();
+            _validatorManager.ThrowIfInvalid(request);
+
+            var user = await _userRepository.FindByLoginAsync(request.Login);
+            return new AuthenticateCommandResponse
+            {
+                User = new AuthenticationUserResponse
+                {
+                    Username = user.Username,
+                    Email = user.Email.Value,
+                    Login = user.Login,
+                    Password = user.Password.Hash
+                },
+                Token = GenerateToken(user)
+            };
         }
 
         public async Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
