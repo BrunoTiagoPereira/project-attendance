@@ -1,5 +1,6 @@
 using ProjectAttendance.CrossCutting.IoC;
 using ProjectAttendance.Host.IoC;
+using ProjectAttendance.Host.Seed;
 using ProjectAttendance.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,6 @@ app.UseApiServices();
 
 app.MapControllers();
 
-app.Services.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>().Database.EnsureCreated();
+app.Services.CreateScope().ServiceProvider.GetRequiredService<IDatabaseSeed>().InitializeAndSeedDatabase();
 
 app.Run();

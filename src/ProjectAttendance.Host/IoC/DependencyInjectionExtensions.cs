@@ -6,6 +6,7 @@ using ProjectAttendance.Application.Users.Services;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
 using ProjectAttendance.Host.Application.Users.Services;
 using ProjectAttendance.Host.Middlewares;
+using ProjectAttendance.Host.Seed;
 using ProjectAttendance.Host.Services;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -21,6 +22,7 @@ namespace ProjectAttendance.Host.IoC
                 .AddScoped<IUserManager, UserManager>()
                 .AddScoped<ExceptionHandlingMiddleware>()
                 .AddScoped<IUserAccessorManager, UserAccessorManager>()
+                .AddScoped<IDatabaseSeed, DatabaseSeed>()
                 .AddValidatorsFromAssembly(typeof(CreateUserCommandRequest).Assembly)
                 ;
 
