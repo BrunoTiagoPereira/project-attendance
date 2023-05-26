@@ -59,7 +59,7 @@ public class UsersControllerTests
     {
         // Given
         var request = new CreateUserCommandRequest { Username = "admin", Email = "admin@admin.com.br", Login = "admin", Password = "AUDH1239480ASKDJO123" };
-        var response = new CreateUserCommandResponse { Id = 1,  Login = "admin" };
+        var response = new CreateUserCommandResponse { User = new CreateUserUserCommandResponse { Id = 1, Login = "admin" } };
 
         _userManager.Setup(mock => mock.CreateUser(It.IsAny<CreateUserCommandRequest>())).ReturnsAsync(response);
 

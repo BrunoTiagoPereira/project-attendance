@@ -89,10 +89,13 @@ namespace ProjectAttendance.Host.Application.Users.Services
 
             return new CreateUserCommandResponse
             {
-                Id = user.Id,
-                Email = user.Email.Value,
-                Login = user.Login,
-                Username = user.Username
+                User = new CreateUserUserCommandResponse
+                {
+                    Id = user.Id,
+                    Email = user.Email.Value,
+                    Login = user.Login,
+                    Username = user.Username
+                }
             };
         }
 

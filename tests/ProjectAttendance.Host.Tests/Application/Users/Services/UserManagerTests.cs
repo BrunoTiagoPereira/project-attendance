@@ -166,9 +166,9 @@ public class UserManagerTests
         // Then
         _validatorManager.Verify(mock => mock.ThrowIfInvalid<CreateUserCommandRequest>(It.IsAny<CreateUserCommandRequest>()));
         _uow.Verify(mock => mock.CommitAsync());
-        result.Username.Should().Be(request.Username);
-        result.Email.Should().Be(request.Email);
-        result.Login.Should().Be(request.Login);
+        result.User.Username.Should().Be(request.Username);
+        result.User.Email.Should().Be(request.Email);
+        result.User.Login.Should().Be(request.Login);
     }
 
     [Fact]
