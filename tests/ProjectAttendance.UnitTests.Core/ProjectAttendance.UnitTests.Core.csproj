@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj" />
+    <ProjectReference Include="..\..\src\ProjectAttendance.Infra\ProjectAttendance.Infra.csproj" />
   </ItemGroup>
 
 </Project>

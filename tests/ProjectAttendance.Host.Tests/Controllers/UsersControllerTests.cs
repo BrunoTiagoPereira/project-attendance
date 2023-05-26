@@ -61,13 +61,30 @@ public class UsersControllerTests
         var request = new CreateUserCommandRequest { Username = "admin", Email = "admin@admin.com.br", Login = "admin", Password = "AUDH1239480ASKDJO123" };
         var response = new CreateUserCommandResponse { User = new CreateUserUserCommandResponse { Id = 1, Login = "admin" } };
 
-        _userManager.Setup(mock => mock.CreateUser(It.IsAny<CreateUserCommandRequest>())).ReturnsAsync(response);
+        _userManager.Setup(mock => mock.CreateUserAsync(It.IsAny<CreateUserCommandRequest>())).ReturnsAsync(response);
 
         // When
         var result = await _testClass.CreateUser(request);
 
         // Then
-        _userManager.Verify(mock => mock.CreateUser(It.IsAny<CreateUserCommandRequest>()));
+        _userManager.Verify(mock => mock.CreateUserAsync(It.IsAny<CreateUserCommandRequest>()));
+        result.Should().Be(response);
+    }
+
+    [Fact]
+    public async Task CanCallUpdateUser()
+    {
+        // Given
+        var request = new UpdateUserCommandRequest { Username = "admin", Email = "admin@admin.com.br", Login = "admin", Password = "AUDH1239480ASKDJO123" };
+        var response = new UpdateUserCommandResponse { User = new UpdateUserUserCommandResponse { Id = 1, Login = "admin" } };
+
+        _userManager.Setup(mock => mock.UpdateUserAsync(It.IsAny<UpdateUserCommandRequest>())).ReturnsAsync(response);
+
+        // When
+        var result = await _testClass.UpdateUser(request);
+
+        // Then
+        _userManager.Verify(mock => mock.UpdateUserAsync(It.IsAny<UpdateUserCommandRequest>()));
         result.Should().Be(response);
     }
 

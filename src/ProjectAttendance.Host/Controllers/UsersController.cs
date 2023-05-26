@@ -32,10 +32,17 @@ namespace ProjectAttendance.Host.Controllers
         [Route("users")]
         public Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
         {
-            return _userManager.CreateUser(request);
+            return _userManager.CreateUserAsync(request);
         }
 
-        [HttpPost]
+        [HttpPut]
+        [Route("users")]
+        public Task<UpdateUserCommandResponse> UpdateUser(UpdateUserCommandRequest request)
+        {
+            return _userManager.UpdateUserAsync(request);
+        }
+
+        [HttpGet]
         [Route("users/{userId}")]
         public Task<GetUserQueryResponse> GetUser(long userId)
         {

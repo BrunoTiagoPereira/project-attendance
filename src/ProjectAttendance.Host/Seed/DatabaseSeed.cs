@@ -25,7 +25,7 @@ namespace ProjectAttendance.Host.Seed
 
             if (!HasAdminUserAlready(context))
             {
-                userManager.CreateUser(new CreateUserCommandRequest
+                userManager.CreateUserAsync(new CreateUserCommandRequest
                 {
                     Username = "admin",
                     Password = "admin123",

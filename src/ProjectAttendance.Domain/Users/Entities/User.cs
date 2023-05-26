@@ -51,5 +51,25 @@ namespace ProjectAttendance.Domain.Users.Entities
 
             Login = login;
         }
+
+        public void UpdateEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new DomainException("Email inválido.");
+            }
+
+            Email = new Email(email);
+        }
+
+        public void UpdatePassword(string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                throw new DomainException("Senha inválida.");
+            }
+
+            Password = new Password(password);
+        }
     }
 }

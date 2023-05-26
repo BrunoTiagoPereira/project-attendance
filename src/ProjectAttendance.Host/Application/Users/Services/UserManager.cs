@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using ProjectAttendance.Application.Users.Services;
 using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
@@ -20,13 +22,15 @@ namespace ProjectAttendance.Host.Application.Users.Services
         private readonly IValidatorManager _validatorManager;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _uow;
+        private readonly IUserAccessorManager _userAccessorManager;
         private readonly string _secret;
 
-        public UserManager(IValidatorManager validatorManager, IUserRepository userRepository, IUnitOfWork uow, IConfiguration configuration)
+        public UserManager(IValidatorManager validatorManager, IUserRepository userRepository, IUnitOfWork uow, IUserAccessorManager userAccessorManager, IConfiguration configuration)
         {
             _validatorManager = validatorManager ?? throw new ArgumentNullException(nameof(validatorManager));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _uow = uow ?? throw new ArgumentNullException(nameof(uow));
+            _userAccessorManager = userAccessorManager ?? throw new ArgumentNullException(nameof(userAccessorManager));
             if (configuration is null)
             {
                 throw new ArgumentNullException(nameof(configuration));
@@ -65,7 +69,7 @@ namespace ProjectAttendance.Host.Application.Users.Services
             };
         }
 
-        public async Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
+        public async Task<CreateUserCommandResponse> CreateUserAsync(CreateUserCommandRequest request)
         {
             _validatorManager.ThrowIfInvalid(request);
 
@@ -99,6 +103,57 @@ namespace ProjectAttendance.Host.Application.Users.Services
             };
         }
 
+        public async Task<UpdateUserCommandResponse> UpdateUserAsync(UpdateUserCommandRequest request)
+        {
+            _validatorManager.ThrowIfInvalid(request);
+
+            var currentUserId = _userAccessorManager.GetCurrentUserId();
+
+            if (request.UserId != currentUserId)
+            {
+                throw new DomainException("O usuário não tem permissão para editar outros usuários");
+            }
+
+            var user = await _userRepository.FindAsync(request.UserId);
+
+            if(user is null)
+            {
+                throw new DomainException("Usuário não existe.");
+            }
+
+            var emailIsTaken = await _userRepository.Set.AnyAsync(x => x.Email.Value == request.Email && x.Id != request.UserId);
+            if (emailIsTaken)
+            {
+                throw new DomainException("Email já cadastrado.");
+            }
+
+            var loginIsTaken = await _userRepository.Set.AnyAsync(x => x.Login == request.Login && x.Id != request.UserId);
+            if (loginIsTaken)
+            {
+                throw new DomainException("Login já cadastrado.");
+            }
+
+            user.UpdateLogin(request.Login);
+            user.UpdateUsername(request.Username);
+            user.UpdateEmail(request.Email);
+            user.UpdatePassword(request.Password);
+
+            _userRepository.Update(user);
+
+            await _uow.CommitAsync();
+
+            return new UpdateUserCommandResponse
+            {
+                User = new UpdateUserUserCommandResponse
+                {
+                    Id = user.Id,
+                    Email = user.Email.Value,
+                    Login = user.Login,
+                    Username = user.Username
+                }
+            };
+        }
+
         public async Task<GetUserQueryResponse> GetUser(GetUserQueryRequest request)
         {
             _validatorManager.ThrowIfInvalid(request);
@@ -120,11 +175,6 @@ namespace ProjectAttendance.Host.Application.Users.Services
                     Login = user.Login
                 }
             };
-        }
-
-        public Task<UpdateUserCommandResponse> UpdateUser(UpdateUserCommandRequest request)
-        {
-            throw new NotImplementedException();
         }
 
         private string GenerateToken(User user)

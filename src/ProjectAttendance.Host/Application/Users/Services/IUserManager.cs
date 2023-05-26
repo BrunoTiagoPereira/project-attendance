@@ -9,9 +9,9 @@ namespace ProjectAttendance.Host.Application.Users.Services
     {
         Task<GetUserQueryResponse> GetUser(GetUserQueryRequest request);
 
-        Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request);
+        Task<CreateUserCommandResponse> CreateUserAsync(CreateUserCommandRequest request);
 
-        Task<UpdateUserCommandResponse> UpdateUser(UpdateUserCommandRequest request);
+        Task<UpdateUserCommandResponse> UpdateUserAsync(UpdateUserCommandRequest request);
 
         Task<AuthenticateQueryResponse> Authenticate(AuthenticateQueryRequest request);
     }
