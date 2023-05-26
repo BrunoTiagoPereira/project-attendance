@@ -2,6 +2,7 @@
 using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
+using ProjectAttendance.Core.ValueObjects;
 using ProjectAttendance.Domain.Users.Entities;
 using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
@@ -38,6 +39,19 @@ namespace ProjectAttendance.Host.Application.Users.Services
             _validatorManager.ThrowIfInvalid(request);
 
             var user = await _userRepository.FindByLoginAsync(request.Login);
+
+            if(user is null)
+            {
+                throw new DomainException("Usuário não encontrado.");
+            }
+
+            var isPasswordValid = new Password(request.Password).Hash == user.Password.Hash;
+
+            if (!isPasswordValid)
+            {
+                throw new DomainException("Usuário não encontrado.");
+            }
+
             return new AuthenticateQueryResponse
             {
                 User = new AuthenticationUserResponse

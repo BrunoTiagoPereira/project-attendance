@@ -75,11 +75,34 @@ public class UserManagerTests
     }
 
     [Fact]
+    public async Task ShowThrowWhenTryToAuthenticateAndUserDoesNotExists()
+    {
+        // Given
+        var request = new AuthenticateQueryRequest { };
+
+        // When  // Then
+        await FluentActions.Invoking(async () => await _testClass.Authenticate(request)).Should().ThrowAsync<DomainException>();
+    }
+
+    [Fact]
+    public async Task ShowThrowWhenTryToAuthenticateAndPasswordIsIncorrect()
+    {
+        // Given
+        var user = _userFaker.Generate();
+        var request = new AuthenticateQueryRequest { Login = user.Login, Password = user.Password + "1" };
+
+        _userRepository.Setup(x => x.FindByLoginAsync(user.Login)).ReturnsAsync(user);
+
+        // When  // Then
+        await FluentActions.Invoking(async () => await _testClass.Authenticate(request)).Should().ThrowAsync<DomainException>();
+    }
+
+    [Fact]
     public async Task CanCallAuthenticate()
     {
         // Given
-        var request = new AuthenticateQueryRequest { Login = "TestValue1003334164", Password = "TestValue1608749491" };
-        var user = new User("TestValue1341857182", "TestValue421070978", "email@email.com.br", "TestValue430616039");
+        var user = new User("admin", "admin", "admin@admin.com", "admin");
+        var request = new AuthenticateQueryRequest { Login = user.Login, Password = "admin" };
 
         _validatorManager.Setup(mock => mock.ThrowIfInvalid<AuthenticateQueryRequest>(It.IsAny<AuthenticateQueryRequest>())).Verifiable();
         _userRepository.Setup(mock => mock.FindByLoginAsync(It.IsAny<string>())).ReturnsAsync(user);
