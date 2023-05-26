@@ -120,6 +120,39 @@ public class UserManagerTests
     }
 
     [Fact]
+    public async Task ShowThrowWhenTryToCreateUserAndEmailIsTaken()
+    {
+        // Given
+        var user = _userFaker.Generate();
+        var request = new CreateUserCommandRequest { Email = user.Email.Value, Login = user.Login };
+
+        _validatorManager.Setup(mock => mock.ThrowIfInvalid<GetUserQueryRequest>(It.IsAny<GetUserQueryRequest>())).Verifiable();
+        _userRepository.Setup(x => x.EmailIsTakenAsync(user.Email.Value)).ReturnsAsync(true);
+
+        // When  // Then
+        await FluentActions.Invoking(async () => await _testClass.CreateUser(request)).Should().ThrowAsync<DomainException>();
+        _userRepository.Verify(x => x.EmailIsTakenAsync(user.Email.Value));
+        _userRepository.Verify(x => x.LoginIsTakenAsync(user.Login), Times.Never());
+    }
+
+    [Fact]
+    public async Task ShowThrowWhenTryToCreateUserAndLoginIsTaken()
+    {
+        // Given
+        var user = _userFaker.Generate();
+        var request = new CreateUserCommandRequest { Email = user.Email.Value, Login = user.Login };
+
+        _validatorManager.Setup(mock => mock.ThrowIfInvalid<GetUserQueryRequest>(It.IsAny<GetUserQueryRequest>())).Verifiable();
+        _userRepository.Setup(x => x.EmailIsTakenAsync(user.Email.Value)).ReturnsAsync(false);
+        _userRepository.Setup(x => x.LoginIsTakenAsync(user.Login)).ReturnsAsync(true);
+
+        // When  // Then
+        await FluentActions.Invoking(async () => await _testClass.CreateUser(request)).Should().ThrowAsync<DomainException>();
+        _userRepository.Verify(x => x.EmailIsTakenAsync(user.Email.Value));
+        _userRepository.Verify(x => x.LoginIsTakenAsync(user.Login));
+    }
+
+    [Fact]
     public async Task CanCallCreateUser()
     {
         // Given

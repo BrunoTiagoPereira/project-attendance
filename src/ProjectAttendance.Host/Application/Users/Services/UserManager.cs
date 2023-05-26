@@ -69,6 +69,18 @@ namespace ProjectAttendance.Host.Application.Users.Services
         {
             _validatorManager.ThrowIfInvalid(request);
 
+            var emailIsTaken = await _userRepository.EmailIsTakenAsync(request.Email);
+            if (emailIsTaken)
+            {
+                throw new DomainException("Email já cadastrado.");
+            }
+
+            var loginIsTaken = await _userRepository.LoginIsTakenAsync(request.Login);
+            if (loginIsTaken)
+            {
+                throw new DomainException("Login já cadastrado.");
+            }
+
             var user = new User(request.Username, request.Login, request.Email, request.Password);
 
             await _userRepository.AddAsync(user);
