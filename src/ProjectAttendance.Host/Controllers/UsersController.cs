@@ -36,10 +36,10 @@ namespace ProjectAttendance.Host.Controllers
         }
 
         [HttpPost]
-        [Route("users/{id}")]
-        public Task<CreateUserCommandResponse> GetUser(CreateUserCommandRequest request)
+        [Route("users/{userId}")]
+        public Task<GetUserQueryResponse> GetUser(long userId)
         {
-            return _userManager.GetUserById(request);
+            return _userManager.GetUser(new GetUserQueryRequest { UserId = userId });
         }
     }
 }

@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
 using ProjectAttendance.Domain.Users.Entities;
@@ -8,6 +9,7 @@ using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
 using ProjectAttendance.Host.Application.Users.Queries.Requests;
 using ProjectAttendance.Host.Application.Users.Services;
+using ProjectAttendance.UnitTests.Core.Fakers;
 using Xunit;
 
 namespace ProjectAttendance.Host.Tests.Application.Users.Services;
@@ -19,19 +21,23 @@ public class UserManagerTests
     private Mock<IUserRepository> _userRepository;
     private Mock<IUnitOfWork> _uow;
     private IConfiguration _configuration;
+    private UserFaker _userFaker;
 
     public UserManagerTests()
     {
         _validatorManager = new Mock<IValidatorManager>();
         _userRepository = new Mock<IUserRepository>();
         _uow = new Mock<IUnitOfWork>();
-        var configurationDictionary = new Dictionary<string, string>();
-
-        configurationDictionary.Add("JwtToken:Secret", Guid.NewGuid().ToString());
+        var configurationDictionary = new Dictionary<string, string>
+        {
+            { "JwtToken:Secret", Guid.NewGuid().ToString() }
+        };
 
         _configuration = new ConfigurationBuilder().AddInMemoryCollection(configurationDictionary).Build();
 
         _testClass = new UserManager(_validatorManager.Object, _userRepository.Object, _uow.Object, _configuration);
+
+        _userFaker = new UserFaker();
     }
 
     [Fact]
@@ -110,26 +116,48 @@ public class UserManagerTests
     }
 
     [Fact]
-    public async Task CanCallGetUserById()
+    public async Task ShowThrowWhenTryToGetUserAndItDoesNotExists()
     {
         // Given
-        var id = 222258937L;
+        var request = new GetUserQueryRequest { UserId = 1 };
+        var user = _userFaker.Generate();
 
-        // When
-        var result = await _testClass.GetUserById(id);
+        _validatorManager.Setup(mock => mock.ThrowIfInvalid<GetUserQueryRequest>(It.IsAny<GetUserQueryRequest>())).Verifiable();
 
-        // Then
+        // When  // Then
+        await FluentActions.Invoking(async () => await _testClass.GetUser(request)).Should().ThrowAsync<DomainException>();
     }
 
     [Fact]
-    public async Task CanCallUpdateUser()
+    public async Task CanCallGetUser()
     {
         // Given
-        var request = new UpdateUserCommandRequest();
+        var request = new GetUserQueryRequest { UserId = 1 };
+        var user = _userFaker.Generate();
+
+        _validatorManager.Setup(mock => mock.ThrowIfInvalid<GetUserQueryRequest>(It.IsAny<GetUserQueryRequest>())).Verifiable();
+        _userRepository.Setup(x => x.FindAsync(1)).ReturnsAsync(user);
 
         // When
-        var result = await _testClass.UpdateUser(request);
+        var result = await _testClass.GetUser(request);
 
         // Then
+        _validatorManager.Verify(mock => mock.ThrowIfInvalid<GetUserQueryRequest>(It.IsAny<GetUserQueryRequest>()));
+        result.User.Email.Should().Be(user.Email.Value);
+        result.User.Username.Should().Be(user.Username);
+        result.User.Login.Should().Be(user.Login);
+        result.User.Id.Should().Be(user.Id);
     }
+
+    //[Fact]
+    //public async Task CanCallUpdateUser()
+    //{
+    //    // Given
+    //    var request = new UpdateUserCommandRequest();
+
+    //    // When
+    //    var result = await _testClass.UpdateUser(request);
+
+    //    // Then
+    //}
 }

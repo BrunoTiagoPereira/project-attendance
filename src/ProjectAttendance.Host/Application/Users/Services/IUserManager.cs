@@ -7,7 +7,7 @@ namespace ProjectAttendance.Host.Application.Users.Services
 {
     public interface IUserManager
     {
-        Task<GetUserQueryResponse> GetUserById(long id);
+        Task<GetUserQueryResponse> GetUser(GetUserQueryRequest request);
 
         Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request);
 

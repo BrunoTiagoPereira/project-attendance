@@ -70,4 +70,21 @@ public class UsersControllerTests
         _userManager.Verify(mock => mock.CreateUser(It.IsAny<CreateUserCommandRequest>()));
         result.Should().Be(response);
     }
+
+    [Fact]
+    public async Task CanCallGetUser()
+    {
+        // Given
+        var request = new GetUserQueryRequest { UserId = 1 };
+        var response = new GetUserQueryResponse { User = new GetUserQueryUserResponse { Id = 1 }   };
+
+        _userManager.Setup(mock => mock.GetUser(It.IsAny<GetUserQueryRequest>())).ReturnsAsync(response);
+
+        // When
+        var result = await _testClass.GetUser(1);
+
+        // Then
+        _userManager.Verify(mock => mock.GetUser(It.Is<GetUserQueryRequest>(y => y.UserId == 1)));
+        result.Should().Be(response);
+    }
 }

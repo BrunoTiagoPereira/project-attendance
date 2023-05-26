@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
 using ProjectAttendance.Domain.Users.Entities;
@@ -69,9 +70,27 @@ namespace ProjectAttendance.Host.Application.Users.Services
             };
         }
 
-        public Task<GetUserQueryResponse> GetUserById(long id)
+        public async Task<GetUserQueryResponse> GetUser(GetUserQueryRequest request)
         {
-            throw new NotImplementedException();
+            _validatorManager.ThrowIfInvalid(request);
+
+            var user = await _userRepository.FindAsync(request.UserId);
+
+            if(user is null)
+            {
+                throw new DomainException("Usuário não encontrado");
+            }
+
+            return new GetUserQueryResponse
+            {
+                User = new GetUserQueryUserResponse
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email.Value,
+                    Login = user.Login
+                }
+            };
         }
 
         public Task<UpdateUserCommandResponse> UpdateUser(UpdateUserCommandRequest request)
