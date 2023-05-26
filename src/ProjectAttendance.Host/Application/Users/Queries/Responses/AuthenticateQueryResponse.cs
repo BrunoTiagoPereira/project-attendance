@@ -2,7 +2,7 @@
 
 namespace ProjectAttendance.Host.Application.Users.Queries.Responses
 {
-    public class AuthenticateCommandResponse
+    public class AuthenticateQueryResponse
     {
         [JsonPropertyName("token")]
         public string Token { get; set; }

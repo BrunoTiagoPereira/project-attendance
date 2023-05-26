@@ -13,6 +13,6 @@ namespace ProjectAttendance.Host.Application.Users.Services
 
         Task<UpdateUserCommandResponse> UpdateUser(UpdateUserCommandRequest request);
 
-        Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest request);
+        Task<AuthenticateQueryResponse> Authenticate(AuthenticateQueryRequest request);
     }
 }

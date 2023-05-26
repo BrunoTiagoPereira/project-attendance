@@ -6,16 +6,16 @@ using ProjectAttendance.Domain.Users.Repositories;
 
 namespace ProjectAttendance.Host.Application.Users.Queries.Requests
 {
-    public class AuthenticateCommandRequestValidator : AbstractValidator<AuthenticateCommandRequest>
+    public class AuthenticateQueryRequestValidator : AbstractValidator<AuthenticateQueryRequest>
     {
         private readonly IUserRepository _userRepository;
 
-        public AuthenticateCommandRequestValidator(IUserRepository userRepository) : this()
+        public AuthenticateQueryRequestValidator(IUserRepository userRepository) : this()
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         }
 
-        private AuthenticateCommandRequestValidator()
+        private AuthenticateQueryRequestValidator()
         {
             RuleFor(x => x).NotNull().WithMessage("Requisição inválida.");
 
@@ -30,7 +30,7 @@ namespace ProjectAttendance.Host.Application.Users.Queries.Requests
         }
 
 
-        private bool IsUserValid(AuthenticateCommandRequest request)
+        private bool IsUserValid(AuthenticateQueryRequest request)
         {
             var user = _userRepository.FindByLoginAsync(request.Login).GetAwaiter().GetResult();
 

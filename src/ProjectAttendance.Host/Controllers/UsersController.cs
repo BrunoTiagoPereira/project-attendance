@@ -23,7 +23,7 @@ namespace ProjectAttendance.Host.Controllers
         [HttpPost]
         [Route("authenticate")]
         [AllowAnonymous]
-        public Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest request)
+        public Task<AuthenticateQueryResponse> Authenticate(AuthenticateQueryRequest request)
         {
             return _userManager.Authenticate(request);
         }
@@ -33,6 +33,13 @@ namespace ProjectAttendance.Host.Controllers
         public Task<CreateUserCommandResponse> CreateUser(CreateUserCommandRequest request)
         {
             return _userManager.CreateUser(request);
+        }
+
+        [HttpPost]
+        [Route("users/{id}")]
+        public Task<CreateUserCommandResponse> GetUser(CreateUserCommandRequest request)
+        {
+            return _userManager.GetUserById(request);
         }
     }
 }

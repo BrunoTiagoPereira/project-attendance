@@ -41,16 +41,16 @@ public class UsersControllerTests
     public async Task CanCallAuthenticate()
     {
         // Given
-        var request = new AuthenticateCommandRequest { Login = "admin", Password = "admin123" };
-        var response = new AuthenticateCommandResponse { User = new AuthenticationUserResponse { Login = "admin", Password = "AUDH1239480ASKDJO123" }, Token = "123697eyo1u23uyohdaudsohuoh" };
+        var request = new AuthenticateQueryRequest { Login = "admin", Password = "admin123" };
+        var response = new AuthenticateQueryResponse { User = new AuthenticationUserResponse { Login = "admin", Password = "AUDH1239480ASKDJO123" }, Token = "123697eyo1u23uyohdaudsohuoh" };
 
-        _userManager.Setup(mock => mock.Authenticate(It.IsAny<AuthenticateCommandRequest>())).ReturnsAsync(response);
+        _userManager.Setup(mock => mock.Authenticate(It.IsAny<AuthenticateQueryRequest>())).ReturnsAsync(response);
 
         // When
         var result = await _testClass.Authenticate(request);
 
         // Then
-        _userManager.Verify(mock => mock.Authenticate(It.IsAny<AuthenticateCommandRequest>()));
+        _userManager.Verify(mock => mock.Authenticate(It.IsAny<AuthenticateQueryRequest>()));
         result.Should().Be(response);
     }
 

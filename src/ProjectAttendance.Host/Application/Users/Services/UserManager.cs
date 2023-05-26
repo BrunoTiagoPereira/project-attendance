@@ -32,12 +32,12 @@ namespace ProjectAttendance.Host.Application.Users.Services
             _secret = configuration.GetSection("JwtToken:Secret").Value;
         }
 
-        public async Task<AuthenticateCommandResponse> Authenticate(AuthenticateCommandRequest request)
+        public async Task<AuthenticateQueryResponse> Authenticate(AuthenticateQueryRequest request)
         {
             _validatorManager.ThrowIfInvalid(request);
 
             var user = await _userRepository.FindByLoginAsync(request.Login);
-            return new AuthenticateCommandResponse
+            return new AuthenticateQueryResponse
             {
                 User = new AuthenticationUserResponse
                 {

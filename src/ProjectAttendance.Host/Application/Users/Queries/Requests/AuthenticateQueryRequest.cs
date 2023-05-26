@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ProjectAttendance.Host.Application.Users.Queries.Requests
 {
-    public class AuthenticateCommandRequest : ICanBeValidated
+    public class AuthenticateQueryRequest : ICanBeValidated
     {
         [JsonPropertyName("login")]
         public string Login { get; set; }

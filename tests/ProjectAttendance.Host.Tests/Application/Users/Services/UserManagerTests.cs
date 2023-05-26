@@ -72,17 +72,17 @@ public class UserManagerTests
     public async Task CanCallAuthenticate()
     {
         // Given
-        var request = new AuthenticateCommandRequest { Login = "TestValue1003334164", Password = "TestValue1608749491" };
+        var request = new AuthenticateQueryRequest { Login = "TestValue1003334164", Password = "TestValue1608749491" };
         var user = new User("TestValue1341857182", "TestValue421070978", "email@email.com.br", "TestValue430616039");
 
-        _validatorManager.Setup(mock => mock.ThrowIfInvalid<AuthenticateCommandRequest>(It.IsAny<AuthenticateCommandRequest>())).Verifiable();
+        _validatorManager.Setup(mock => mock.ThrowIfInvalid<AuthenticateQueryRequest>(It.IsAny<AuthenticateQueryRequest>())).Verifiable();
         _userRepository.Setup(mock => mock.FindByLoginAsync(It.IsAny<string>())).ReturnsAsync(user);
 
         // When
         var result = await _testClass.Authenticate(request);
 
         // Then
-        _validatorManager.Verify(mock => mock.ThrowIfInvalid<AuthenticateCommandRequest>(It.IsAny<AuthenticateCommandRequest>()));
+        _validatorManager.Verify(mock => mock.ThrowIfInvalid<AuthenticateQueryRequest>(It.IsAny<AuthenticateQueryRequest>()));
         _userRepository.Verify(mock => mock.FindByLoginAsync(It.IsAny<string>()));
         result.User.Email.Should().Be(user.Email.Value);
         result.User.Username.Should().Be(user.Username);
