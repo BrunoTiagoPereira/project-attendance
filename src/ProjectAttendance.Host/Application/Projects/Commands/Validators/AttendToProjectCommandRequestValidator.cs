@@ -20,8 +20,6 @@ namespace ProjectAttendance.Host.Application.Users.Commands.Validators
             RuleFor(x => x.EndedAt).NotEqual(default(DateTime)).WithMessage("Data fim inválida.");
 
             RuleFor(x => x.EndedAt).LessThan(DateTime.Now).WithMessage("A data fim deve ser menor que agora.");
-
-            RuleFor(x => x.EndedAt).GreaterThan(x => x.StartedAt).WithMessage("A data fim deve ser maior que a data de início.");
         }
     }
 }

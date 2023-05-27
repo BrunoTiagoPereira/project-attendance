@@ -18,13 +18,13 @@ namespace ProjectAttendance.Domain.Projects.Entities
 
         public IReadOnlyCollection<WorkTime> WorkTimes => _workTimes.AsReadOnly();
 
-        protected Project() : base()
+        protected Project()
         {
             _users = new List<User>();
             _workTimes = new List<WorkTime>();
         }
 
-        public Project(string title, string description, IEnumerable<User> users) : base()
+        public Project(string title, string description, IEnumerable<User> users) : this()
         {
             UpdateTitle(title);
             UpdateDescription(description);
@@ -48,7 +48,7 @@ namespace ProjectAttendance.Domain.Projects.Entities
                 throw new DomainException("Descrição inválida.");
             }
 
-            Title = description;
+            Description = description;
         }
 
         public void UpdateUsers(IEnumerable<User> users)
@@ -68,7 +68,7 @@ namespace ProjectAttendance.Domain.Projects.Entities
                 throw new DomainException("Usuário inválido.");
             }
 
-            if(!Users.Any(x => x.Id == user.Id))
+            if(!Users.Contains(user))
             {
                 throw new DomainException("Usuário não pertence ao projeto.");
             }
@@ -86,11 +86,6 @@ namespace ProjectAttendance.Domain.Projects.Entities
             if (endedAt > DateTime.Now)
             {
                 throw new DomainException("A data fim deve ser menor que agora.");
-            }
-
-            if (endedAt < startedAt)
-            {
-                throw new DomainException("A data fim deve ser maior que a data de início.");
             }
 
             var workTime = new WorkTime(user, this, startedAt, endedAt);
