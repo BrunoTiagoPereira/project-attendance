@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Projects\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ProjectAttendance.Core\ProjectAttendance.Core.csproj" />
     <ProjectReference Include="..\ProjectAttendance.CrossCutting\ProjectAttendance.CrossCutting.csproj" />
     <ProjectReference Include="..\ProjectAttendance.Domain\ProjectAttendance.Domain.csproj" />

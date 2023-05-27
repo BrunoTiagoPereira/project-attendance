@@ -60,5 +60,43 @@ namespace ProjectAttendance.Domain.Projects.Entities
 
             _users = users.ToList();
         }
+
+        public WorkTime AttendTo(User user, DateTime startedAt, DateTime endedAt)
+        {
+            if(user is null)
+            {
+                throw new DomainException("Usuário inválido.");
+            }
+
+            if(!Users.Any(x => x.Id == user.Id))
+            {
+                throw new DomainException("Usuário não pertence ao projeto.");
+            }
+
+            if(startedAt > DateTime.Now)
+            {
+                throw new DomainException("A data de início deve ser menor que agora.");
+            }
+
+            if (startedAt > endedAt)
+            {
+                throw new DomainException("A data de início deve ser menor que a data fim.");
+            }
+
+            if (endedAt > DateTime.Now)
+            {
+                throw new DomainException("A data fim deve ser menor que agora.");
+            }
+
+            if (endedAt < startedAt)
+            {
+                throw new DomainException("A data fim deve ser maior que a data de início.");
+            }
+
+            var workTime = new WorkTime(user, this, startedAt, endedAt);
+            _workTimes.Add(workTime);
+
+            return workTime;
+        }
     }
 }

@@ -10,5 +10,15 @@ namespace ProjectAttendance.Infra.Repositories
         public ProjectRepository(DbContext context) : base(context)
         {
         }
+
+        public Task<Project?> GetProjectWithUsersAndWorkTimesAsync(long projectId)
+        {
+            return Set
+                .AsTracking()
+                .Include(x => x.Users)
+                .Include(x => x.WorkTimes)
+                .FirstOrDefaultAsync(x => x.Id == projectId)
+                ;
+        }
     }
 }
