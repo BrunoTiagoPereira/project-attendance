@@ -40,12 +40,12 @@ public class ProjectsControllerTests
         // Given
         var request = new AttendToProjectCommandRequest { UserId = 75710797L, ProjectId = 1825782255L, StartedAt = DateTime.UtcNow, EndedAt = DateTime.UtcNow };
 
-        _projectManager.Setup(mock => mock.AttendToProject(It.IsAny<AttendToProjectCommandRequest>())).ReturnsAsync(new AttendToProjectCommandResponse { WorkTime = new AttendToProjectWorkTimeCommandResponse { WorkTimeId = 1983645963L, UserId = 1658643017L, ProjectId = 1731828042L, StartedAt = DateTime.UtcNow, EndedAt = DateTime.UtcNow } });
+        _projectManager.Setup(mock => mock.AttendToProjectAsync(It.IsAny<AttendToProjectCommandRequest>())).ReturnsAsync(new AttendToProjectCommandResponse { WorkTime = new AttendToProjectWorkTimeCommandResponse { WorkTimeId = 1983645963L, UserId = 1658643017L, ProjectId = 1731828042L, StartedAt = DateTime.UtcNow, EndedAt = DateTime.UtcNow } });
 
         // When
         var result = await _testClass.AttendToProject(request);
 
         // Then
-        _projectManager.Verify(mock => mock.AttendToProject(It.IsAny<AttendToProjectCommandRequest>()));
+        _projectManager.Verify(mock => mock.AttendToProjectAsync(It.IsAny<AttendToProjectCommandRequest>()));
     }
 }

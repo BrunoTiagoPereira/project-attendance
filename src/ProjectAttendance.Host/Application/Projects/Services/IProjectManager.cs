@@ -4,6 +4,7 @@ namespace ProjectAttendance.Host.Application.Projects.Services
 {
     public interface IProjectManager
     {
-        Task<AttendToProjectCommandResponse> AttendToProject(AttendToProjectCommandRequest request);
+        Task<AttendToProjectCommandResponse> AttendToProjectAsync(AttendToProjectCommandRequest request);
+        Task<CreateProjectCommandResponse> CreateProjectAsync(AttendToProjectCommandRequest request);
     }
 }

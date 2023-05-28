@@ -95,7 +95,7 @@ public class ProjectManagerTests
         _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(1);
 
         // When // Then
-        await FluentActions.Invoking(async () => await _testClass.AttendToProject(new AttendToProjectCommandRequest { UserId = 2 })).Should().ThrowAsync<DomainException>();
+        await FluentActions.Invoking(async () => await _testClass.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = 2 })).Should().ThrowAsync<DomainException>();
         _userAccessorManager.Verify(x => x.GetCurrentUserId());
         _uow.Verify(x => x.CommitAsync(), Times.Never());
     }
@@ -107,7 +107,7 @@ public class ProjectManagerTests
         _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(1);
 
         // When // Then
-        await FluentActions.Invoking(async () => await _testClass.AttendToProject(new AttendToProjectCommandRequest { UserId = 1 })).Should().ThrowAsync<DomainException>();
+        await FluentActions.Invoking(async () => await _testClass.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = 1 })).Should().ThrowAsync<DomainException>();
         _userAccessorManager.Verify(x => x.GetCurrentUserId());
         _userRepository.Verify(x => x.FindAsync(1));
         _uow.Verify(x => x.CommitAsync(), Times.Never());
@@ -123,7 +123,7 @@ public class ProjectManagerTests
         _userRepository.Setup(x => x.FindAsync(1)).ReturnsAsync(user);
 
         // When // Then
-        await FluentActions.Invoking(async () => await _testClass.AttendToProject(new AttendToProjectCommandRequest { UserId = 1 })).Should().ThrowAsync<DomainException>();
+        await FluentActions.Invoking(async () => await _testClass.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = 1 })).Should().ThrowAsync<DomainException>();
         _userAccessorManager.Verify(x => x.GetCurrentUserId());
         _userRepository.Verify(x => x.FindAsync(1));
         _uow.Verify(x => x.CommitAsync(), Times.Never());
@@ -143,7 +143,7 @@ public class ProjectManagerTests
         _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user.Id);
 
         // When // Then
-        await FluentActions.Invoking(async () => await manager.AttendToProject(new AttendToProjectCommandRequest { UserId = user.Id, ProjectId = project.Id })).Should().ThrowAsync<DomainException>();
+        await FluentActions.Invoking(async () => await manager.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = user.Id, ProjectId = project.Id })).Should().ThrowAsync<DomainException>();
         _userAccessorManager.Verify(x => x.GetCurrentUserId());
         _uow.Verify(x => x.CommitAsync(), Times.Never());
     }
@@ -163,7 +163,7 @@ public class ProjectManagerTests
         _projectRepository.Setup(x => x.GetProjectWithUsersAndWorkTimesAsync(project.Id)).ReturnsAsync(project);
 
         // When 
-        var result = await _testClass.AttendToProject(new AttendToProjectCommandRequest { UserId = user.Id, ProjectId = project.Id, StartedAt = startedAt, EndedAt = endedAt });
+        var result = await _testClass.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = user.Id, ProjectId = project.Id, StartedAt = startedAt, EndedAt = endedAt });
 
         // Then
         _userAccessorManager.Verify(x => x.GetCurrentUserId());

@@ -25,7 +25,7 @@ namespace ProjectAttendance.Host.Application.Projects.Services
             _uow = uow ?? throw new ArgumentNullException(nameof(uow));
         }
 
-        public async Task<AttendToProjectCommandResponse> AttendToProject(AttendToProjectCommandRequest request)
+        public async Task<AttendToProjectCommandResponse> AttendToProjectAsync(AttendToProjectCommandRequest request)
         {
             _validatorManager.ThrowIfInvalid(request);
 
