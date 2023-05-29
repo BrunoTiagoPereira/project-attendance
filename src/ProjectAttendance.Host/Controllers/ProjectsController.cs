@@ -46,5 +46,12 @@ namespace ProjectAttendance.Host.Controllers
         {
             return _projectManager.GetProjectAsync(new GetProjectQueryRequest { ProjectId = projectId });
         }
+
+        [HttpGet]
+        [Route("projects")]
+        public Task<GetProjectsFromUserQueryResponse> GetProjectsFromUser()
+        {
+            return _projectManager.GetProjectsFromUserAsync(new GetProjectsFromUserQueryRequest());
+        }
     }
 }

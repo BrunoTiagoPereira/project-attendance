@@ -21,5 +21,17 @@ namespace ProjectAttendance.Infra.Repositories
                 .FirstOrDefaultAsync(x => x.Id == projectId)
                 ;
         }
+
+        public Task<Project[]> GetProjectstFromUserAsync(long userId)
+        {
+            return Set
+                .AsTracking()
+                .Include(x => x.Users)
+                .Include(x => x.WorkTimes)
+                .ThenInclude(x => x.User)
+                .Where(x => x.Users.Any(x => x.Id == userId))
+                .ToArrayAsync()
+                ;
+        }
     }
 }

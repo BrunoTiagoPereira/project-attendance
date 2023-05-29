@@ -181,5 +181,24 @@ namespace ProjectAttendance.Host.Application.Projects.Services
                 }
             };
         }
+
+        public async Task<GetProjectsFromUserQueryResponse> GetProjectsFromUserAsync(GetProjectsFromUserQueryRequest request)
+        {
+            var currentUserId = _userAccessorManager.GetCurrentUserId();
+
+            var projects = await _projectRepository.GetProjectstFromUserAsync(currentUserId);
+
+            return new GetProjectsFromUserQueryResponse
+            {
+                Projects = projects.Select(x => new GetProjectsFromUserProjectQueryResponse
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Users = x.Users.Select(x => new GetProjectsFromUserUserQueryResponse { Id = x.Id, Username = x.Username }).ToList(),
+                    WorkTimes = x.WorkTimes.Select(x => new GetProjectsFromUserWorkTimeQueryResponse { Id = x.Id, UserId = x.UserId, Username = x.User.Username, StartedAt = x.StartedAt, EndedAt = x.EndedAt }).ToList()
+                }).ToList()
+            };
+        }
     }
 }

@@ -305,4 +305,29 @@ public class ProjectManagerTests
         result.Project.Description.Should().Be(project2.Description);
         _databaseContext.Set<Project>().Find(result.Project.Id).Users.Should().ContainSingle();
     }
+
+    [Fact]
+    public async Task CanCallGetProjectsFromUser()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var user1 = _userFaker.Generate();
+        var user2 = _userFaker.Generate();
+        var project = _projectFaker.Generate();
+        var project2 = _projectFaker.Generate();
+
+        project.UpdateUsers(new[] { user1 });
+        project2.UpdateUsers(new[] { user2 });
+
+        _databaseContext.AddRange(user1, user2, project, project2);
+        _databaseContext.SaveChanges();
+
+        _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user1.Id);
+
+        // When
+        var result = await manager.GetProjectsFromUserAsync(new GetProjectsFromUserQueryRequest());
+
+        // Then
+        result.Projects.Should().ContainSingle();
+    }
 }

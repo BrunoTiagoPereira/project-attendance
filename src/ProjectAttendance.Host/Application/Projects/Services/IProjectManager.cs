@@ -10,5 +10,7 @@ namespace ProjectAttendance.Host.Application.Projects.Services
         Task<CreateProjectCommandResponse> CreateProjectAsync(CreateProjectCommandRequest request);
         Task<UpdateProjectCommandResponse> UpdateProjectAsync(UpdateProjectCommandRequest request);
         Task<GetProjectQueryResponse> GetProjectAsync(GetProjectQueryRequest request);
+
+        Task<GetProjectsFromUserQueryResponse> GetProjectsFromUserAsync(GetProjectsFromUserQueryRequest request);
     }
 }

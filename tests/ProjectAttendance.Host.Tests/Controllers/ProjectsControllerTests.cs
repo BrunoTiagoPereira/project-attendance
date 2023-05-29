@@ -1,6 +1,8 @@
 using FluentAssertions;
 using Moq;
 using ProjectAttendance.Host.Application.Projects.Commands.Requests;
+using ProjectAttendance.Host.Application.Projects.Queries.Requests;
+using ProjectAttendance.Host.Application.Projects.Queries.Responses;
 using ProjectAttendance.Host.Application.Projects.Services;
 using ProjectAttendance.Host.Controllers;
 using Xunit;
@@ -77,5 +79,20 @@ public class ProjectsControllerTests
 
         // Then
         _projectManager.Verify(mock => mock.UpdateProjectAsync(It.IsAny<UpdateProjectCommandRequest>()));
+    }
+
+    [Fact]
+    public async Task CanCallGetProjectsFromUser()
+    {
+        // Given
+        var request = new GetProjectsFromUserQueryRequest { };
+
+        _projectManager.Setup(mock => mock.GetProjectsFromUserAsync(It.IsAny<GetProjectsFromUserQueryRequest>())).ReturnsAsync(new GetProjectsFromUserQueryResponse());
+
+        // When
+        var result = await _testClass.GetProjectsFromUser();
+
+        // Then
+        _projectManager.Verify(mock => mock.GetProjectsFromUserAsync(It.IsAny<GetProjectsFromUserQueryRequest>()));
     }
 }
