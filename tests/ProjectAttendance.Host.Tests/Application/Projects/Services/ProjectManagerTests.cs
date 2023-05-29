@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
 using Moq;
@@ -10,9 +7,9 @@ using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
 using ProjectAttendance.Domain.Projects.Entities;
 using ProjectAttendance.Domain.Projects.Repositories;
-using ProjectAttendance.Domain.Users.Entities;
 using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Projects.Commands.Requests;
+using ProjectAttendance.Host.Application.Projects.Queries.Requests;
 using ProjectAttendance.Host.Application.Projects.Services;
 using ProjectAttendance.Infra;
 using ProjectAttendance.Infra.Repositories;
@@ -113,7 +110,6 @@ public class ProjectManagerTests
         _uow.Verify(x => x.CommitAsync(), Times.Never());
     }
 
-
     [Fact]
     public async Task ShouldThrowWhenProjectDoesNotExists()
     {
@@ -162,7 +158,7 @@ public class ProjectManagerTests
         _userRepository.Setup(x => x.FindAsync(user.Id)).ReturnsAsync(user);
         _projectRepository.Setup(x => x.GetProjectWithUsersAndWorkTimesAsync(project.Id)).ReturnsAsync(project);
 
-        // When 
+        // When
         var result = await _testClass.AttendToProjectAsync(new AttendToProjectCommandRequest { UserId = user.Id, ProjectId = project.Id, StartedAt = startedAt, EndedAt = endedAt });
 
         // Then
@@ -190,7 +186,7 @@ public class ProjectManagerTests
         _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user.Id);
 
         // When // Then
-        await FluentActions.Invoking(async () => await manager.CreateProjectAsync(new CreateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user.Id, 5} })).Should().ThrowAsync<DomainException>();
+        await FluentActions.Invoking(async () => await manager.CreateProjectAsync(new CreateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user.Id, 5 } })).Should().ThrowAsync<DomainException>();
         _userAccessorManager.Verify(x => x.GetCurrentUserId());
         _uow.Verify(x => x.CommitAsync(), Times.Never());
     }
@@ -209,7 +205,7 @@ public class ProjectManagerTests
 
         _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user1.Id);
 
-        // When 
+        // When
         var result = await manager.CreateProjectAsync(new CreateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user2.Id } });
 
         // Then
@@ -220,5 +216,35 @@ public class ProjectManagerTests
         _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.Should().HaveCount(2);
         _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.First().Should().Be(user1);
         _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.Last().Should().Be(user2);
+    }
+
+    [Fact]
+    public async Task ShouldThrowWhenGettingProjectAndItDoesNotExists()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        // When // Then
+        await FluentActions.Invoking(async () => await manager.GetProjectAsync(new GetProjectQueryRequest { ProjectId = 1 })).Should().ThrowAsync<DomainException>();
+    }
+
+    [Fact]
+    public async Task CanCallGetProject()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var user = _userFaker.Generate();
+        var project = _projectFaker.Generate();
+
+        project.UpdateUsers(new[] { user });
+        project.AttendTo(user, DateTime.Now.AddDays(-2), DateTime.Now.AddDays(-1));
+
+        _databaseContext.AddRange(user, project);
+        _databaseContext.SaveChanges();
+
+        // When
+        var result = await manager.GetProjectAsync(new GetProjectQueryRequest { ProjectId = project.Id });
+
+        // Then
+        result.Should().NotBeNull();
     }
 }

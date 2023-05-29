@@ -9,6 +9,8 @@ namespace ProjectAttendance.Application.Users.Services
 
         void ThrowIfUserDontHasAccess(IUserRelated entity);
 
+        void ThrowIfUserDontHasAccess(IHasUsersRelated entity);
+
         Task<User> GetCurrentUser();
     }
 }

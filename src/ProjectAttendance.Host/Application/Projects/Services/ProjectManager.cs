@@ -7,6 +7,8 @@ using ProjectAttendance.Domain.Projects.Entities;
 using ProjectAttendance.Domain.Projects.Repositories;
 using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Projects.Commands.Requests;
+using ProjectAttendance.Host.Application.Projects.Queries.Requests;
+using ProjectAttendance.Host.Application.Projects.Queries.Responses;
 
 namespace ProjectAttendance.Host.Application.Projects.Services
 {
@@ -47,12 +49,12 @@ namespace ProjectAttendance.Host.Application.Projects.Services
 
             var project = await _projectRepository.GetProjectWithUsersAndWorkTimesAsync(request.ProjectId);
 
-            if(project is null)
+            if (project is null)
             {
                 throw new DomainException("Projeto não existe.");
             }
 
-            if(!project.Users.Any(x => x.Id== request.UserId))
+            if (!project.Users.Any(x => x.Id == request.UserId))
             {
                 throw new DomainException("O usuário não pertence ao projeto.");
             }
@@ -82,14 +84,14 @@ namespace ProjectAttendance.Host.Application.Projects.Services
             var currentUserId = _userAccessorManager.GetCurrentUserId();
             var requestUsers = request.UsersIds ?? new List<long>();
 
-            if(!requestUsers.Any(x => x == currentUserId))
+            if (!requestUsers.Any(x => x == currentUserId))
             {
                 requestUsers.Add(currentUserId);
             }
 
             var users = await _userRepository.Set.Where(x => requestUsers.Contains(x.Id)).ToArrayAsync();
 
-            if(requestUsers.Distinct().Count() != users.Length)
+            if (requestUsers.Distinct().Count() != users.Length)
             {
                 throw new DomainException("Algum usuário não existe.");
             }
@@ -109,8 +111,32 @@ namespace ProjectAttendance.Host.Application.Projects.Services
                     UsersIds = requestUsers
                 }
             };
+        }
 
+        public async Task<GetProjectQueryResponse> GetProjectAsync(GetProjectQueryRequest request)
+        {
+            _validatorManager.ThrowIfInvalid(request);
 
+            var project = await _projectRepository.GetProjectWithUsersAndWorkTimesAsync(request.ProjectId);
+
+            if (project is null)
+            {
+                throw new DomainException("Projeto não encontrado");
+            }
+
+            _userAccessorManager.ThrowIfUserDontHasAccess(project);
+
+            return new GetProjectQueryResponse
+            {
+                Project = new GetProjectProjectQueryResponse
+                {
+                    Id = project.Id,
+                    Title = project.Title,
+                    Description = project.Description,
+                    Users = project.Users.Select(x => new GetProjectProjectUserQueryResponse { Id = x.Id, Username = x.Username }).ToList(),
+                    WorkTimes = project.WorkTimes.Select(x => new GetProjectProjectWorkTimeQueryResponse { Id = x.Id, UserId = x.UserId, Username = x.User.Username, StartedAt = x.StartedAt, EndedAt = x.EndedAt }).ToList()
+                }
+            };
         }
     }
 }

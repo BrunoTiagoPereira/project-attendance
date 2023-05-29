@@ -35,5 +35,13 @@ namespace ProjectAttendance.Host.Services
                 throw new NotAuthorizedException("Usuário não autorizado");
             }
         }
+
+        public void ThrowIfUserDontHasAccess(IHasUsersRelated entity)
+        {
+            if (!entity.Users.Any(x => x.Id == GetCurrentUserId()))
+            {
+                throw new NotAuthorizedException("Usuário não autorizado");
+            }
+        }
     }
 }

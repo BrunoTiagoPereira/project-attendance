@@ -17,6 +17,7 @@ namespace ProjectAttendance.Infra.Repositories
                 .AsTracking()
                 .Include(x => x.Users)
                 .Include(x => x.WorkTimes)
+                .ThenInclude(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == projectId)
                 ;
         }
