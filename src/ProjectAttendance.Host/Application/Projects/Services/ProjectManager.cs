@@ -2,6 +2,7 @@
 using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
+using ProjectAttendance.Domain.Projects.Entities;
 using ProjectAttendance.Domain.Projects.Repositories;
 using ProjectAttendance.Domain.Users.Repositories;
 using ProjectAttendance.Host.Application.Projects.Commands.Requests;
@@ -71,6 +72,25 @@ namespace ProjectAttendance.Host.Application.Projects.Services
                     StartedAt = request.StartedAt,
                 }
             };
+        }
+
+        public async Task<CreateProjectCommandResponse> CreateProjectAsync(CreateProjectCommandRequest request)
+        {
+            _validatorManager.ThrowIfInvalid(request);
+
+            var currentUserId = _userAccessorManager.GetCurrentUserId();
+            var requestUsers = request.UsersIds ?? new List<long>();
+
+            if(!requestUsers.Any(x => x == currentUserId))
+            {
+                requestUsers.Add(currentUserId);
+            }
+
+            var users = await _userRepository.Set.Where(x => requestUsers.Contains(x.Id));
+
+            var project = new Project(request.Title, request.Description, )
+
+
         }
     }
 }

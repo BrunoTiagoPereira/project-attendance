@@ -21,7 +21,14 @@ namespace ProjectAttendance.Host.Controllers
         [Route("times")]
         public Task<AttendToProjectCommandResponse> AttendToProject(AttendToProjectCommandRequest request)
         {
-            return _projectManager.AttendToProject(request);
+            return _projectManager.AttendToProjectAsync(request);
+        }
+
+        [HttpPost]
+        [Route("projects")]
+        public Task<CreateProjectCommandResponse> CreateProject(CreateProjectCommandRequest request)
+        {
+            return _projectManager.CreateProjectAsync(request);
         }
     }
 }
