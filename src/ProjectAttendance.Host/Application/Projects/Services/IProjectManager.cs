@@ -8,6 +8,7 @@ namespace ProjectAttendance.Host.Application.Projects.Services
     {
         Task<AttendToProjectCommandResponse> AttendToProjectAsync(AttendToProjectCommandRequest request);
         Task<CreateProjectCommandResponse> CreateProjectAsync(CreateProjectCommandRequest request);
+        Task<UpdateProjectCommandResponse> UpdateProjectAsync(UpdateProjectCommandRequest request);
         Task<GetProjectQueryResponse> GetProjectAsync(GetProjectQueryRequest request);
     }
 }

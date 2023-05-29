@@ -63,4 +63,19 @@ public class ProjectsControllerTests
         // Then
         _projectManager.Verify(mock => mock.CreateProjectAsync(It.IsAny<CreateProjectCommandRequest>()));
     }
+
+    [Fact]
+    public async Task CanCallUpdateProject()
+    {
+        // Given
+        var request = new UpdateProjectCommandRequest { Title = "project", Description = "project" };
+
+        _projectManager.Setup(mock => mock.UpdateProjectAsync(It.IsAny<UpdateProjectCommandRequest>())).ReturnsAsync(new UpdateProjectCommandResponse { Project = new UpdateProjectProjectCommandResponse { Id = 1, Title = "project", Description = "project" } });
+
+        // When
+        var result = await _testClass.UpdateProject(request);
+
+        // Then
+        _projectManager.Verify(mock => mock.UpdateProjectAsync(It.IsAny<UpdateProjectCommandRequest>()));
+    }
 }

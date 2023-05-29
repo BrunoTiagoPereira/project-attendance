@@ -113,6 +113,49 @@ namespace ProjectAttendance.Host.Application.Projects.Services
             };
         }
 
+        public async Task<UpdateProjectCommandResponse> UpdateProjectAsync(UpdateProjectCommandRequest request)
+        {
+            _validatorManager.ThrowIfInvalid(request);
+
+            var currentUserId = _userAccessorManager.GetCurrentUserId();
+            var requestUsers = request.UsersIds ?? new List<long>();
+
+            var users = await _userRepository.Set.Where(x => requestUsers.Contains(x.Id)).ToArrayAsync();
+
+            if (requestUsers.Distinct().Count() != users.Length)
+            {
+                throw new DomainException("Algum usuário não existe.");
+            }
+
+            var project = await _projectRepository.GetProjectWithUsersAndWorkTimesAsync(request.ProjectId);
+
+            if(project is null)
+            {
+                throw new DomainException("Projeto não existe.");
+            }
+
+            _userAccessorManager.ThrowIfUserDontHasAccess(project);
+
+            project.UpdateTitle(request.Title);
+            project.UpdateDescription(request.Description);
+            project.UpdateUsers(users);
+
+            _projectRepository.Update(project);
+            await _uow.CommitAsync();
+
+            return new UpdateProjectCommandResponse
+            {
+                Project = new UpdateProjectProjectCommandResponse
+                {
+                    Id = project.Id,
+                    Title = project.Title,
+                    Description = project.Description,
+                    Users = project.Users.Select(x => new UpdateProjectProjectUserCommandResponse { Id = x.Id, Username = x.Username }).ToList(),
+                    WorkTimes = project.WorkTimes.Select(x => new UpdateProjectProjectWorkTimeCommandResponse { Id = x.Id, UserId = x.UserId, Username = x.User.Username, StartedAt = x.StartedAt, EndedAt = x.EndedAt }).ToList()
+                }
+            };
+        }
+
         public async Task<GetProjectQueryResponse> GetProjectAsync(GetProjectQueryRequest request)
         {
             _validatorManager.ThrowIfInvalid(request);

@@ -33,6 +33,13 @@ namespace ProjectAttendance.Host.Controllers
             return _projectManager.CreateProjectAsync(request);
         }
 
+        [HttpPut]
+        [Route("projects")]
+        public Task<UpdateProjectCommandResponse> UpdateProject(UpdateProjectCommandRequest request)
+        {
+            return _projectManager.UpdateProjectAsync(request);
+        }
+
         [HttpGet]
         [Route("projects/{projectId}")]
         public Task<GetProjectQueryResponse> GetProject(long projectId)

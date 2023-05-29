@@ -247,4 +247,62 @@ public class ProjectManagerTests
         // Then
         result.Should().NotBeNull();
     }
+
+    [Fact]
+    public async Task ShouldThrowWhenUpdatingProjectAndAnyUserDoesNotExists()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var project = _projectFaker.Generate();
+        var user = _userFaker.Generate();
+
+        _databaseContext.AddRange(user, project);
+        _databaseContext.SaveChanges();
+
+        // When // Then
+        await FluentActions.Invoking(async () => await manager.UpdateProjectAsync(new UpdateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user.Id, 5 } })).Should().ThrowAsync<DomainException>();
+        _uow.Verify(x => x.CommitAsync(), Times.Never());
+    }
+
+    [Fact]
+    public async Task ShouldThrowWhenUpdatingProjectAndItDoesNotExists()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var project = _projectFaker.Generate();
+        var user = _userFaker.Generate();
+
+        _databaseContext.AddRange(user, project);
+        _databaseContext.SaveChanges();
+
+        // When // Then
+        await FluentActions.Invoking(async () => await manager.UpdateProjectAsync(new UpdateProjectCommandRequest { ProjectId = 5, Title = project.Title, Description = project.Description, UsersIds = new List<long> { user.Id } })).Should().ThrowAsync<DomainException>();
+        _uow.Verify(x => x.CommitAsync(), Times.Never());
+    }
+
+    [Fact]
+    public async Task CanCallUpdateProject()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var user1 = _userFaker.Generate();
+        var user2 = _userFaker.Generate();
+        var project = _projectFaker.Generate();
+        var project2 = _projectFaker.Generate();
+
+        _databaseContext.AddRange(user1, user2, project);
+        _databaseContext.SaveChanges();
+
+        _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user1.Id);
+
+        // When
+        var result = await manager.UpdateProjectAsync(new UpdateProjectCommandRequest { ProjectId = project.Id, Title = project2.Title, Description = project2.Description, UsersIds = new List<long> { user2.Id } });
+
+        // Then
+        _uow.Verify(x => x.CommitAsync());
+        _databaseContext.Set<Project>().Should().ContainSingle();
+        result.Project.Title.Should().Be(project2.Title);
+        result.Project.Description.Should().Be(project2.Description);
+        _databaseContext.Set<Project>().Find(result.Project.Id).Users.Should().ContainSingle();
+    }
 }
