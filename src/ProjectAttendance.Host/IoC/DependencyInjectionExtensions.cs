@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProjectAttendance.Application.Users.Services;
+using ProjectAttendance.Host.Application.Projects.Services;
 using ProjectAttendance.Host.Application.Users.Commands.Requests;
 using ProjectAttendance.Host.Application.Users.Services;
 using ProjectAttendance.Host.Middlewares;
@@ -20,6 +21,7 @@ namespace ProjectAttendance.Host.IoC
             services
                 .AddHttpContextAccessor()
                 .AddScoped<IUserManager, UserManager>()
+                .AddScoped<IProjectManager, ProjectManager>()
                 .AddScoped<ExceptionHandlingMiddleware>()
                 .AddScoped<IUserAccessorManager, UserAccessorManager>()
                 .AddScoped<IDatabaseSeed, DatabaseSeed>()

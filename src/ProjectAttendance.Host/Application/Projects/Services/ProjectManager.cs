@@ -1,4 +1,5 @@
-﻿using ProjectAttendance.Application.Users.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectAttendance.Application.Users.Services;
 using ProjectAttendance.Core.Exceptions;
 using ProjectAttendance.Core.Transaction;
 using ProjectAttendance.Core.Validators;
@@ -86,9 +87,28 @@ namespace ProjectAttendance.Host.Application.Projects.Services
                 requestUsers.Add(currentUserId);
             }
 
-            var users = await _userRepository.Set.Where(x => requestUsers.Contains(x.Id));
+            var users = await _userRepository.Set.Where(x => requestUsers.Contains(x.Id)).ToArrayAsync();
 
-            var project = new Project(request.Title, request.Description, )
+            if(requestUsers.Distinct().Count() != users.Length)
+            {
+                throw new DomainException("Algum usuário não existe.");
+            }
+
+            var project = new Project(request.Title, request.Description, users);
+
+            await _projectRepository.AddAsync(project);
+            await _uow.CommitAsync();
+
+            return new CreateProjectCommandResponse
+            {
+                Project = new CreateProjectProjectCommandResponse
+                {
+                    ProjectId = project.Id,
+                    Title = request.Title,
+                    Description = request.Description,
+                    UsersIds = requestUsers
+                }
+            };
 
 
         }

@@ -24,7 +24,7 @@ namespace ProjectAttendance.Domain.Users.Entities
             _workTimes = new List<WorkTime>();
         }
 
-        public User(string username, string login, string email, string password) : base()
+        public User(string username, string login, string email, string password) : this()
         {
             UpdateUsername(username);
             UpdateLogin(login);

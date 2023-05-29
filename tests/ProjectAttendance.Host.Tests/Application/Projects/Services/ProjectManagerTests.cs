@@ -176,4 +176,49 @@ public class ProjectManagerTests
         result.WorkTime.StartedAt.Should().Be(startedAt);
         result.WorkTime.EndedAt.Should().Be(endedAt);
     }
+
+    [Fact]
+    public async Task ShouldThrowWhenCreatingProjectAndAnyUserDoesNotExists()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var project = _projectFaker.Generate();
+        var user = _userFaker.Generate();
+
+        _databaseContext.SaveChanges();
+
+        _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user.Id);
+
+        // When // Then
+        await FluentActions.Invoking(async () => await manager.CreateProjectAsync(new CreateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user.Id, 5} })).Should().ThrowAsync<DomainException>();
+        _userAccessorManager.Verify(x => x.GetCurrentUserId());
+        _uow.Verify(x => x.CommitAsync(), Times.Never());
+    }
+
+    [Fact]
+    public async Task CanCallCreateProject()
+    {
+        // Given
+        var manager = new ProjectManager(_validatorManager.Object, new UserRepository(_databaseContext), new ProjectRepository(_databaseContext), _userAccessorManager.Object, _uow.Object);
+        var user1 = _userFaker.Generate();
+        var user2 = _userFaker.Generate();
+        var project = _projectFaker.Generate();
+
+        _databaseContext.AddRange(user1, user2, project);
+        _databaseContext.SaveChanges();
+
+        _userAccessorManager.Setup(x => x.GetCurrentUserId()).Returns(user1.Id);
+
+        // When 
+        var result = await manager.CreateProjectAsync(new CreateProjectCommandRequest { Title = project.Title, Description = project.Description, UsersIds = new List<long> { user2.Id } });
+
+        // Then
+        _uow.Verify(x => x.CommitAsync());
+        _databaseContext.Set<Project>().Should().ContainSingle();
+        result.Project.Title.Should().Be(project.Title);
+        result.Project.Description.Should().Be(project.Description);
+        _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.Should().HaveCount(2);
+        _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.First().Should().Be(user1);
+        _databaseContext.Set<Project>().Find(result.Project.ProjectId).Users.Last().Should().Be(user2);
+    }
 }
